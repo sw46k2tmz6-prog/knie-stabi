@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knie Stabi · Patella</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f0d;
+    --surface: #161714;
+    --surface2: #1e1f1c;
+    --border: #2a2b28;
+    --accent: #c8f04a;
+    --accent-dim: #8aaa2a;
+    --text: #e8e6df;
+    --text-muted: #7a7970;
+    --text-soft: #b0ae a5;
+    --red: #f05a4a;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 32px 24px 0;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(30px, 8vw, 42px);
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 28px;
+  }
+
+  /* ── STREAK BAR ── */
+  .streak-bar {
+    max-width: 560px;
+    margin: 0 auto 24px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .streak-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 6px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .streak-pill span { color: var(--text-muted); }
+
+  /* ── CALENDAR ── */
+  .calendar-wrap {
+    max-width: 560px;
+    margin: 0 auto 28px;
+    padding: 0 24px;
+  }
+
+  .calendar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .calendar-grid {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .cal-day {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    transition: all 0.2s;
+    cursor: default;
+    position: relative;
+  }
+
+  .cal-day.done {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0e0f0d;
+  }
+
+  .cal-day.today {
+    border-color: var(--accent-dim);
+    color: var(--text);
+  }
+
+  .cal-day.today:not(.done)::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── EXERCISES LIST ── */
+  .exercises {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .exercise-card.done-card {
+    border-color: var(--accent-dim);
+    opacity: 0.7;
+  }
+
+  .exercise-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .exercise-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .exercise-card.done-card .exercise-icon {
+    background: #1a2200;
+  }
+
+  .exercise-info { flex: 1; min-width: 0; }
+
+  .exercise-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .exercise-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .exercise-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 13px;
+  }
+
+  .exercise-card.done-card .exercise-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0e0f0d;
+  }
+
+  /* ── EXPAND PANEL ── */
+  .exercise-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .exercise-panel.open {
+    max-height: 500px;
+  }
+
+  .exercise-body {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+    padding-top: 14px;
+  }
+
+  .exercise-desc {
+    font-size: 12.5px;
+    font-weight: 300;
+    color: #9a9890;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .tips {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+
+  .tips-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 6px;
+  }
+
+  .tips p {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── TIMER ── */
+  .timer-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .timer-ring-wrap {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+
+  .timer-ring-wrap svg {
+    transform: rotate(-90deg);
+  }
+
+  .timer-ring-bg {
+    fill: none;
+    stroke: var(--surface2);
+    stroke-width: 6;
+  }
+
+  .timer-ring-fill {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.5s linear, stroke 0.3s;
+  }
+
+  .timer-ring-fill.warn { stroke: #f0a04a; }
+  .timer-ring-fill.urgent { stroke: var(--red); }
+
+  .timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .timer-label-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .timer-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .timer-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .timer-btn:hover { background: var(--border); }
+  .timer-btn:active { transform: scale(0.96); }
+
+  .timer-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0e0f0d;
+    font-weight: 500;
+  }
+
+  .timer-btn.primary:hover { background: var(--accent-dim); }
+
+  .timer-sets {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .set-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+
+  .set-dot.done-set { background: var(--accent); }
+
+  .timer-phase {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-dim);
+    text-align: center;
+  }
+
+  /* ── RESET ALL ── */
+  .reset-btn {
+    display: block;
+    margin: 0 auto 20px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .reset-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    max-width: 560px;
+    margin: 0 auto 20px;
+    padding: 0 24px;
+  }
+
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── CONFETTI / DONE STATE ── */
+  .all-done-banner {
+    display: none;
+    max-width: 560px;
+    margin: 0 auto 20px;
+    padding: 0 24px;
+  }
+
+  .all-done-banner.show { display: block; }
+
+  .all-done-inner {
+    background: #1a2200;
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    text-align: center;
+  }
+
+  .all-done-inner .big { font-size: 28px; margin-bottom: 6px; }
+  .all-done-inner p { font-size: 13px; color: var(--accent); font-weight: 500; }
+  .all-done-inner small { font-size: 11px; color: var(--text-muted); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Patella Rehab · Daily Routine</div>
+  <h1>Knie <em>Stabi</em></h1>
+  <p class="header-sub">Patellasehne · täglich · ~15–20 min</p>
+</header>
+
+<!-- STREAK -->
+<div class="streak-bar">
+  <div class="streak-pill">🔥 <strong id="streak-count">0</strong> <span>Tage Streak</span></div>
+  <div class="streak-pill" style="margin-left:auto;">✅ <strong id="total-days">0</strong> <span>Gesamt</span></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="calendar-wrap">
+  <div class="calendar-label">Juni 2026</div>
+  <div class="calendar-grid" id="calendar"></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-row">
+    <span>Heute</span>
+    <span id="prog-label">0 / 6</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ALL DONE BANNER -->
+<div class="all-done-banner" id="done-banner">
+  <div class="all-done-inner">
+    <div class="big">🎉</div>
+    <p>Alle Übungen erledigt!</p>
+    <small>Patellasehne dankt es dir.</small>
+  </div>
+</div>
+
+<!-- EXERCISES -->
+<div class="exercises">
+  <div class="section-label">Übungen</div>
+</div>
+
+<button class="reset-btn" id="reset-btn" onclick="resetDay()">↺ Heute zurücksetzen</button>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const EXERCISES = [
+  {
+    id: 'vmopush',
+    icon: '🦵',
+    name: 'VMO Wall Slide',
+    meta: '3 × 12 Wdh · langsam',
+    seconds: 45,
+    sets: 3,
+    desc: 'Rücken an die Wand lehnen, Füße 30 cm vor dem Körper. Langsam in die Kniebeuge gleiten (ca. 60°), dabei den inneren Oberschenkel (VMO) aktiv anspannen. 2 Sek runter, 2 Sek halten, 2 Sek hoch.',
+    tip: 'Das Knie zeigt Richtung 2. Zehe – nicht nach innen kippen. Fersen bleiben fest am Boden.'
+  },
+  {
+    id: 'single_rdl',
+    icon: '🏃',
+    name: 'Einbeiniges Romanian Deadlift',
+    meta: '3 × 8 pro Seite · kontrolliert',
+    seconds: 40,
+    sets: 3,
+    desc: 'Auf einem Bein stehen, Oberkörper langsam nach vorne kippen, Standbein leicht gebeugt. Rückseite Oberschenkel und Gesäß arbeiten. Frei oder mit leichtem Gewicht (0,5–1 kg Wasserflaschen).',
+    tip: 'Hüfte bleibt parallel zum Boden. Knie des Standbeins bleibt stabil – keine Rotation.'
+  },
+  {
+    id: 'decline_squat',
+    icon: '📐',
+    name: 'Decline Squat (Buch/Keil)',
+    meta: '3 × 15 Wdh · exzentrisch',
+    seconds: 50,
+    sets: 3,
+    desc: 'Fersen auf einem 15–25° Keil (zusammengelegte Bücher o. Ä.) stellen. Langsame Kniebeuge – dabei die Knie weit nach vorne über die Zehen schieben. Exzentrische Phase (runter) 3–4 Sekunden. Besonders wirksam für die Patellasehne.',
+    tip: 'Die Vorwärtsneigung des Knies ist hier gewollt – das isoliert die Patellasehne. Beginne mit kleiner Tiefe (30°) und steigere dich.'
+  },
+  {
+    id: 'terminal',
+    icon: '⚡',
+    name: 'Terminal Knee Extension',
+    meta: '3 × 15 Wdh pro Seite',
+    seconds: 40,
+    sets: 3,
+    desc: 'Widerstandsband (oder Strumpfhose) hinter dem Knie befestigen, leichte Spannung. Aus leicht gebeugtem Knie heraus vollständig strecken – dabei VMO und Quadrizeps maximal anspannen. Langsam wieder zurück.',
+    tip: 'Ziel ist die letzte 20°-Streckbewegung – genau der Bereich, der die Patellasehne stabilisiert. Kontrolle ist wichtiger als Tempo.'
+  },
+  {
+    id: 'calf',
+    icon: '🪜',
+    name: 'Exzentrisches Calf Raise (Treppenstufe)',
+    meta: '3 × 15 Wdh · langsam runter',
+    seconds: 50,
+    sets: 3,
+    desc: 'Ballen auf Treppenstufe oder dickem Buch. Mit beiden Beinen hoch, dann auf einem Bein langsam (3–4 Sek) nach unten – Ferse unter Kantenniveau. Kräftigt gesamte hintere Kette & entlastet Patellasehne.',
+    tip: 'Nicht ruckartig hochspringen. Die exzentrische (absenkende) Phase ist der Trainingsreiz. Geländer für Balance nutzen.'
+  },
+  {
+    id: 'hip_abduct',
+    icon: '🔄',
+    name: 'Side-Lying Hip Abduction',
+    meta: '2 × 20 Wdh pro Seite',
+    seconds: 35,
+    sets: 2,
+    desc: 'Seitenlage, unten liegendes Bein angewinkelt, oberes Bein gestreckt. Oberes Bein langsam hoch (ca. 30–40°) und wieder runter. Stärkt Gluteus medius – verhindert Knieeinsturz beim Laufen.',
+    tip: 'Hüfte bleibt senkrecht, nicht nach hinten kippen. Die Zehen zeigen leicht nach unten für maximale Gluteus-Aktivierung.'
+  },
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+function getState() {
+  try {
+    return JSON.parse(localStorage.getItem('knie_stabi') || '{}');
+  } catch { return {}; }
+}
+function saveState(s) { localStorage.setItem('knie_stabi', JSON.stringify(s)); }
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+let openCard = null;
+let timerState = {}; // keyed by exercise id
+
+// ── CALENDAR ──────────────────────────────────────────────────────────────────
+function buildCalendar() {
+  const state = getState();
+  const grid = document.getElementById('calendar');
+  grid.innerHTML = '';
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = now.getDate();
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    if (d === today) el.classList.add('today');
+    if (state[key] && state[key].allDone) el.classList.add('done');
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+// ── STREAK ────────────────────────────────────────────────────────────────────
+function calcStreak() {
+  const state = getState();
+  let streak = 0;
+  const d = new Date();
+  // if today done, count it, else start from yesterday
+  const todayK = todayKey();
+  if (!state[todayK]?.allDone) d.setDate(d.getDate() - 1);
+  while (true) {
+    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (state[k]?.allDone) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  document.getElementById('streak-count').textContent = streak;
+  const total = Object.values(state).filter(v => v.allDone).length;
+  document.getElementById('total-days').textContent = total;
+}
+
+// ── PROGRESS ──────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const state = getState();
+  const tk = todayKey();
+  const todayDone = (state[tk] && state[tk].done) ? Object.keys(state[tk].done).filter(k => state[tk].done[k]).length : 0;
+  const total = EXERCISES.length;
+  document.getElementById('prog-label').textContent = `${todayDone} / ${total}`;
+  document.getElementById('prog-fill').style.width = `${(todayDone/total)*100}%`;
+  document.getElementById('done-banner').classList.toggle('show', todayDone === total);
+}
+
+// ── MARK DONE ─────────────────────────────────────────────────────────────────
+function toggleDone(id) {
+  const state = getState();
+  const tk = todayKey();
+  if (!state[tk]) state[tk] = { done: {} };
+  if (!state[tk].done) state[tk].done = {};
+  state[tk].done[id] = !state[tk].done[id];
+  const allDone = EXERCISES.every(e => state[tk].done[e.id]);
+  state[tk].allDone = allDone;
+  saveState(state);
+  refreshCard(id);
+  updateProgress();
+  buildCalendar();
+  calcStreak();
+}
+
+function isDone(id) {
+  const state = getState();
+  const tk = todayKey();
+  return !!(state[tk] && state[tk].done && state[tk].done[id]);
+}
+
+function resetDay() {
+  const state = getState();
+  const tk = todayKey();
+  delete state[tk];
+  saveState(state);
+  EXERCISES.forEach(e => refreshCard(e.id));
+  updateProgress();
+  buildCalendar();
+  calcStreak();
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────────────────
+function initTimer(id, seconds, sets) {
+  if (!timerState[id]) {
+    timerState[id] = {
+      totalSec: seconds,
+      remaining: seconds,
+      sets: sets,
+      currentSet: 0,
+      running: false,
+      interval: null,
+      phase: 'bereit'
+    };
+  }
+}
+
+function getTimerEl(id) {
+  return document.getElementById(`timer-${id}`);
+}
+
+function renderTimer(id) {
+  const t = timerState[id];
+  if (!t) return;
+  const el = getTimerEl(id);
+  if (!el) return;
+
+  const pct = t.remaining / t.totalSec;
+  const offset = 283 * (1 - pct);
+  const fill = el.querySelector('.timer-ring-fill');
+  fill.style.strokeDashoffset = offset;
+  fill.className = 'timer-ring-fill' + (pct < 0.2 ? ' urgent' : pct < 0.4 ? ' warn' : '');
+
+  const mins = Math.floor(t.remaining / 60);
+  const secs = t.remaining % 60;
+  el.querySelector('.timer-display').textContent = `${mins}:${String(secs).padStart(2,'0')}`;
+  el.querySelector('.timer-phase').textContent = t.phase;
+
+  const dots = el.querySelectorAll('.set-dot');
+  dots.forEach((d,i) => d.classList.toggle('done-set', i < t.currentSet));
+
+  const btn = el.querySelector('.timer-btn.primary');
+  btn.textContent = t.running ? '⏸ Pause' : (t.remaining < t.totalSec && !t.running ? '▶ Weiter' : '▶ Start');
+  if (t.currentSet >= t.sets && t.remaining === t.totalSec) btn.textContent = '✓ Fertig';
+}
+
+function startPauseTimer(id) {
+  const t = timerState[id];
+  if (t.running) {
+    clearInterval(t.interval);
+    t.running = false;
+    renderTimer(id);
+    return;
+  }
+  if (t.currentSet >= t.sets) return;
+  t.phase = `Satz ${t.currentSet + 1} / ${t.sets}`;
+  t.running = true;
+  t.interval = setInterval(() => {
+    t.remaining--;
+    if (t.remaining <= 0) {
+      clearInterval(t.interval);
+      t.running = false;
+      t.currentSet++;
+      if (t.currentSet < t.sets) {
+        t.phase = '✓ Pause 30 Sek';
+        t.remaining = t.totalSec;
+        renderTimer(id);
+        // auto-reset for next set after pause indicator
+        setTimeout(() => {
+          if (timerState[id]) {
+            timerState[id].phase = 'bereit';
+            renderTimer(id);
+          }
+        }, 1500);
+      } else {
+        t.phase = 'Fertig! 🎉';
+        t.remaining = t.totalSec;
+        renderTimer(id);
+      }
+    }
+    renderTimer(id);
+  }, 1000);
+}
+
+function resetTimer(id) {
+  const t = timerState[id];
+  if (!t) return;
+  clearInterval(t.interval);
+  t.remaining = t.totalSec;
+  t.running = false;
+  t.currentSet = 0;
+  t.phase = 'bereit';
+  renderTimer(id);
+}
+
+// ── RENDER CARDS ──────────────────────────────────────────────────────────────
+function refreshCard(id) {
+  const ex = EXERCISES.find(e => e.id === id);
+  const card = document.getElementById(`card-${id}`);
+  if (!card) return;
+  const done = isDone(id);
+  card.classList.toggle('done-card', done);
+  card.querySelector('.exercise-check').textContent = done ? '✓' : '';
+}
+
+function buildCards() {
+  const container = document.querySelector('.exercises');
+  const label = container.querySelector('.section-label');
+  container.innerHTML = '';
+  container.appendChild(label);
+
+  EXERCISES.forEach(ex => {
+    initTimer(ex.id, ex.seconds, ex.sets);
+    const done = isDone(ex.id);
+
+    const card = document.createElement('div');
+    card.className = 'exercise-card' + (done ? ' done-card' : '');
+    card.id = `card-${ex.id}`;
+
+    // sets dots html
+    let dotsHtml = '';
+    for (let i = 0; i < ex.sets; i++) dotsHtml += `<div class="set-dot" id="dot-${ex.id}-${i}"></div>`;
+
+    card.innerHTML = `
+      <div class="exercise-header" onclick="toggleCard('${ex.id}')">
+        <div class="exercise-icon">${ex.icon}</div>
+        <div class="exercise-info">
+          <div class="exercise-name">${ex.name}</div>
+          <div class="exercise-meta">${ex.meta}</div>
+        </div>
+        <div class="exercise-check">${done ? '✓' : ''}</div>
+      </div>
+      <div class="exercise-panel" id="panel-${ex.id}">
+        <div class="exercise-body">
+          <p class="exercise-desc">${ex.desc}</p>
+          <div class="tips">
+            <div class="tips-label">💡 Hinweis</div>
+            <p>${ex.tip}</p>
+          </div>
+          <div class="timer-wrap" id="timer-${ex.id}">
+            <div class="timer-ring-wrap">
+              <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle class="timer-ring-bg" cx="50" cy="50" r="45"/>
+                <circle class="timer-ring-fill" cx="50" cy="50" r="45"
+                  style="stroke-dasharray:283;stroke-dashoffset:0"/>
+              </svg>
+              <div class="timer-display">0:${String(ex.seconds).padStart(2,'0')}</div>
+            </div>
+            <div class="timer-label-text">pro Satz</div>
+            <div class="timer-phase">bereit</div>
+            <div class="timer-sets">${dotsHtml}</div>
+            <div class="timer-controls">
+              <button class="timer-btn" onclick="resetTimer('${ex.id}')">↺</button>
+              <button class="timer-btn primary" onclick="startPauseTimer('${ex.id}')">▶ Start</button>
+              <button class="timer-btn" onclick="toggleDone('${ex.id}')">✓ Erledigt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+    renderTimer(ex.id);
+  });
+}
+
+function toggleCard(id) {
+  const panel = document.getElementById(`panel-${id}`);
+  const isOpen = panel.classList.contains('open');
+  // close all
+  document.querySelectorAll('.exercise-panel.open').forEach(p => p.classList.remove('open'));
+  if (!isOpen) panel.classList.add('open');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildCards();
+buildCalendar();
+calcStreak();
+updateProgress();
+</script>
+</body>
+</html>
